@@ -48,14 +48,22 @@ async def startprivate(client, message):
     joinButton = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("CHANNEL", url="https://t.me/nacbots"),
+                InlineKeyboardButton("🔔 Community", url="https://t.me/pixelton_community"),
                 InlineKeyboardButton(
-                    "SUPPORT GROUP", url="https://t.me/n_a_c_bot_developers"
+                    "📢 Support", url="https://t.me/pixelton_support"
                 ),
             ]
         ]
     )
-    welcomed = f"Hey <b>{message.from_user.first_name}</b>\nI'm a simple Telegram bot that can broadcast messages and media to the bot subscribers. Made by @NACBOTS.\n\n 🎚 use /settings"
+    welcomed = (
+        f"Hey <b>{message.from_user.first_name}</b>\n\n"
+        "👋 Welcome to PixelTON!\n\n"
+        "Your PixelTON adventure begins here 🎮✨\n"
+        "Summon heroes 💎, send them on quests ⚔️, and earn real rewards 💰 using TON 🔷.\n"
+        "Every choice matters — only the smartest rise to the top 🏆\n\n"
+        "Ready to start your journey? Let’s pull your first hero! 🚀\n\n"
+        "Feel free to join our community and support groups for more updates and discussions! 📢"
+    )
     await message.reply_text(welcomed, reply_markup=joinButton)
     raise StopPropagation
 
