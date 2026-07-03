@@ -5,7 +5,7 @@ import logging
 
 from pyrogram import Client
 from pyrogram import StopPropagation, filters
-from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
 import config
 from handlers.broadcast import broadcast
@@ -100,7 +100,7 @@ async def startprivate(client, message):
             gameButton = InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("⚔️ Start your journey with referral code ⚔️", url=f"{config.GAME_URL}/?ref={referrer_param}")
+                        InlineKeyboardButton("⚔️ Start your journey with referral code ⚔️", web_app=WebAppInfo(url=f"{config.GAME_URL}/?ref={referrer_param}"))
                     ]
                 ]
             )
