@@ -7,6 +7,7 @@ LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", ""))
 AUTH_USERS = set(int(x) for x in os.environ.get("AUTH_USERS", "").split())
 DB_URL = os.environ.get("DB_URL", "")
 DB_NAME = os.environ.get("DB_NAME", "BroadcastBot")
+GAME_URL = os.environ.get("GAME_URL", "")
 
 # broadcast settings
 

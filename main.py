@@ -1,4 +1,5 @@
 import os
+import re
 import traceback
 import logging
 
@@ -18,6 +19,32 @@ DB_NAME = config.DB_NAME
 
 db = Database(DB_URL, DB_NAME)
 
+def validate_referrer_param(param: str) -> bool:
+    if not param or not isinstance(param, str):
+        return False
+ 
+    if len(param) > 64 or len(param) < 1:
+        return False
+ 
+    dangerous_patterns = [
+        r'<script', r'javascript:', r'onerror=', r'onclick=', 
+        r'onload=', r'<iframe', r'eval\(', r'alert\(',
+        r'\.\./', r'\.\.',  # path traversal
+        r'[\x00-\x1f\x7f]',  # control chars
+        r'[\'";`]',  # quotes for injection
+        r'--', r'/\*', r'\*/',  # SQL comment patterns
+        r'union\s+select', r'drop\s+table',  # SQL injection
+    ]
+ 
+    param_lower = param.lower()
+    for pattern in dangerous_patterns:
+        if re.search(pattern, param_lower, re.IGNORECASE):
+            return False
+ 
+    if not re.match(r'^[a-zA-Z0-9_-]+$', param):
+        return False
+ 
+    return True
 
 Bot = Client(
     "BroadcastBot",
@@ -61,10 +88,27 @@ async def startprivate(client, message):
         "Your PixelTON adventure begins here 🎮✨\n"
         "Summon heroes 💎, send them on quests ⚔️, and earn real rewards 💰 using TON 🔷.\n"
         "Every choice matters — only the smartest rise to the top 🏆\n\n"
-        "Ready to start your journey? Let’s pull your first hero! 🚀\n\n"
+        "Ready to start your journey? Let's pull your first hero! 🚀\n\n"
         "Feel free to join our community and support groups for more updates and discussions! 📢"
     )
     await message.reply_text(welcomed, reply_markup=joinButton)
+    
+    # Handle referrer parameter if present
+    if len(message.command) > 1:
+        referrer_param = str(message.command[1])
+        if validate_referrer_param(referrer_param) and config.GAME_URL:
+            gameButton = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton("⚔️ Start your journey with referral code ⚔️", url=f"{config.GAME_URL}/?ref={referrer_param}")
+                    ]
+                ]
+            )
+            await message.reply_text(
+                "🎮 You've been invited to play! Click the button below to start your adventure.",
+                reply_markup=gameButton
+            )
+    
     raise StopPropagation
 
 
